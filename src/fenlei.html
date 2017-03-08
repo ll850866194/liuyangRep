@@ -1,0 +1,23 @@
+	<div class="nav1">
+		<span>《</span>
+		<span>分类</span>
+		<span style="color: white">.</span>
+	</div>
+	<div id="left">
+		<ul class="fenleiul">
+			<li ng-class="border($index)" ng-click="borderclick($index)" ng-repeat="lis in lis">{{lis}}</li>
+		</ul>
+	</div>
+	<div id="right">
+		<dl ng-repeat="i in data">
+			<dt style="background: #f1f1f1; line-height: 50px; text-align: left;">{{i.className}}</dt>
+			<dd ng-repeat="j in i.classTwo">
+				<ul>
+					<li>
+						<img ng-src="{{j.classPicture}}">
+						<p>{{j.className}}</p>
+					</li>
+				</ul>
+			</dd>
+		</dl>
+	</div>
