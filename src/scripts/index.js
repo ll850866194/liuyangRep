@@ -143,7 +143,9 @@ angular.module('myApp',['ngRoute'])
 .controller('cartController',["$scope",function($scope){
 	$scope.cartData = [];
     for(var item in localStorage){
-        $scope.cartData.push(JSON.parse(localStorage[item]));
+    	if(item != "searchData"){
+    		$scope.cartData.push(JSON.parse(localStorage[item]))
+    	}       
     };
 
 
@@ -217,6 +219,43 @@ angular.module('myApp',['ngRoute'])
 	};
 }])
 
+.controller('searchCtrl',["$scope","$http","$window",function($scope,$http,$window){
+	//搜索数据
+	$http.get("data/data.json").then(function(data5){
+		$scope.products = data5.data.info.result[10].goodsList;//第一个data是形参
+	},function(error){
+		console.log(error);
+		$scope.error = error;
+	});
+//搜索页判断隐藏工具栏
+	$scope.able = false;
+//本地存储
+	if(!$window.localStorage.searchData){
+		$window.localStorage.searchData="[]";//"[]"==JSON.stringify([]);
+	};
+	$scope.data = JSON.parse($window.localStorage.searchData)//字符串转换为对象;
+	$scope.test = "";
+	$scope.toggle = function(){
+		$scope.testdata = $scope.test;
+		if($scope.test !=""){
+			if($scope.data.indexOf($scope.test)==-1){				
+				$scope.data.push($scope.test);
+				$window.localStorage.searchData=JSON.stringify($scope.data);//对象转换为字符串
+			}	
+			$scope.able = !$scope.able;
+			$scope.test = "";
+		}
+	}
+	$scope.none = function(){
+		$scope.data = [];
+		$window.localStorage.searchData="[]";
+	}
+
+	$scope.toggle1 = function(){
+		$scope.able = false;
+	}
+}])
+
 .config(["$routeProvider","$locationProvider",function($routeProvider,$locationProvider){
 	$locationProvider.html5Mode(false).hashPrefix('');	//解决1.6的路由地址冲突
 	//在此进行路由
@@ -239,6 +278,10 @@ angular.module('myApp',['ngRoute'])
 	})
 	.when("/maijia",{
 		templateUrl:"maijia.html"
+	})
+	.when("/search",{
+		templateUrl:"search.html",
+		controller:"searchCtrl"
 	})
 }]);
 
