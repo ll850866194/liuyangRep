@@ -1,5 +1,5 @@
 	<div class="nav1">
-		<span>《</span>
+		<span><a href="#/"><img src="images/fanhui.png" style="width: 20px; margin: 5px;"></a></span>
 		<span>分类</span>
 		<span style="color: white">.</span>
 	</div>
@@ -13,10 +13,12 @@
 			<dt style="background: #f1f1f1; line-height: 50px; text-align: left;">{{i.className}}</dt>
 			<dd ng-repeat="j in i.classTwo">
 				<ul>
-					<li>
-						<img ng-src="{{j.classPicture}}">
-						<p>{{j.className}}</p>
-					</li>
+					<a href="#/detail?id={{j.classId}}">
+						<li>
+							<img ng-src="{{j.classPicture}}">
+							<p>{{j.className}}</p>
+						</li>
+					</a>
 				</ul>
 			</dd>
 		</dl>

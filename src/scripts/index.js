@@ -138,7 +138,42 @@ angular.module('myApp',['ngRoute'])
 	}
 
 	$scope.lis = ["食品酒水生鲜","美容护肤彩妆","服饰鞋帽配饰","箱包钟表珠宝","营养保健护理","3G手机数码","生活家居日化","母婴玩具乐器","电脑办公耗材","家用电器","汽车用品","运动户外健身","家居家装建材"];
+
 }])
+
+.controller('detailCtrl', ['$scope','$http','$location', function($scope,$http,$location){
+
+   	var param = $location.absUrl().split('=')[1];
+    $http.get('data/dataz.json').then( function(data){
+        for(var i = 0 ; i < data.data.classTwo.length ; i++){
+            if(data.data.classTwo[i].id == param){
+                $scope.data = data.data.classTwo[i];
+            }
+        }
+        
+    });
+    $scope.add = function($event){
+        $event.stopPropagation();
+
+        if(localStorage[$scope.data.name]){
+            var data = JSON.parse(localStorage[$scope.data.name]);
+            ++data.num;
+            localStorage[$scope.data.name] = JSON.stringify(data);
+
+        }else{
+            var obj = {
+                name:$scope.data.name,
+                price:100,
+                picUrl:$scope.data.picture,
+                num:1
+            }
+
+            localStorage[$scope.data.name] = JSON.stringify(obj);
+        }
+    }
+   
+}])
+
 
 .controller('cartController',["$scope",function($scope){
 	$scope.cartData = [];
@@ -234,16 +269,16 @@ angular.module('myApp',['ngRoute'])
 		$window.localStorage.searchData="[]";//"[]"==JSON.stringify([]);
 	};
 	$scope.data = JSON.parse($window.localStorage.searchData)//字符串转换为对象;
-	$scope.test = "";
-	$scope.toggle = function(){
-		$scope.testdata = $scope.test;
-		if($scope.test !=""){
-			if($scope.data.indexOf($scope.test)==-1){				
-				$scope.data.push($scope.test);
+
+	$scope.toggle = function(test){
+		$scope.testdata = test;
+		if(test !=""){
+			if($scope.data.indexOf(test)==-1){				
+				$scope.data.push(test);
 				$window.localStorage.searchData=JSON.stringify($scope.data);//对象转换为字符串
 			}	
 			$scope.able = !$scope.able;
-			$scope.test = "";
+			test = "";
 		}
 	}
 	$scope.none = function(){
@@ -283,6 +318,10 @@ angular.module('myApp',['ngRoute'])
 		templateUrl:"search.html",
 		controller:"searchCtrl"
 	})
+	.when("/detail",{
+		templateUrl:"detail.html",
+		controller:"detailCtrl"
+	})
 }]);
 
 
@@ -303,3 +342,4 @@ function createCode () {
         checkCode.innerHTML = code;
     }
 };
+
